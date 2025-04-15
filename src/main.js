@@ -28,6 +28,8 @@ form.addEventListener('submit', async (event) => {
 
     showLoader();
     clearGallery();
+    scrollGallery();
+
     hideLoadMoreButton(); 
 
     try {
@@ -61,13 +63,15 @@ loadMoreButton.addEventListener('click', async () => {
         const { hits } = await getImagesByQuery(query, page);
         createGallery(hits);
 
-        if (page * 15 >= totalHits) {
-            hideLoadMoreButton();
-            iziToast.info({
-                title: 'End of results',
-                message: "We're sorry, but you've reached the end of search results.",
-            });
+        const totalPages = Math.ceil(totalHits / 15);
+        if (page >= totalPages) {
+          hideLoadMoreButton();
+          iziToast.info({
+            title: 'End of results',
+            message: "We're sorry, but you've reached the end of search results.",
+          });
         }
+
     } catch (error) {
         iziToast.error({
             title: 'Error',
@@ -77,6 +81,17 @@ loadMoreButton.addEventListener('click', async () => {
         hideLoader();
     }
 });
+
+function scrollGallery() {
+    const { height: cardHeight } = document
+      .querySelector('.gallery')
+      .firstElementChild.getBoundingClientRect();
+  
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth',
+    });
+  }
 
 function showLoadMoreButton() {
     loadMoreButton.classList.remove('hidden');
