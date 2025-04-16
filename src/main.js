@@ -28,7 +28,7 @@ form.addEventListener('submit', async (event) => {
 
     showLoader();
     clearGallery();
-    scrollGallery();
+    //scrollGallery();
 
     hideLoadMoreButton(); 
 
@@ -62,6 +62,7 @@ loadMoreButton.addEventListener('click', async () => {
     try {
         const { hits } = await getImagesByQuery(query, page);
         createGallery(hits);
+        scrollGallery();
 
         const totalPages = Math.ceil(totalHits / 15);
         if (page >= totalPages) {
